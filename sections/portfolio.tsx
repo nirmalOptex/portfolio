@@ -1,0 +1,202 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { ExternalLink, ZoomIn } from "lucide-react";
+import { ScrollReveal } from "@/components/scroll-reveal";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { projects } from "@/lib/data";
+import { Project } from "@/types";
+import { GithubIcon } from "@/components/brand-icons";
+
+export function PortfolioSection() {
+  const [filter, setFilter] = useState("All");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const categories = ["All", "Web App", "AI", "Mobile App", "E-Commerce", "Design"];
+
+  const filteredProjects = filter === "All" 
+    ? projects 
+    : projects.filter((p) => p.category === filter);
+
+  return (
+    <section id="portfolio" className="py-24 relative overflow-hidden bg-background">
+      {/* Grid background */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <ScrollReveal className="text-center max-w-2xl mx-auto mb-12">
+          <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
+            Featured Projects
+          </h2>
+          <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
+          <p className="text-muted-foreground text-md leading-relaxed">
+            A curated collection of digital products, showing fullstack integrations, responsive UIs, and cloud integrations.
+          </p>
+        </ScrollReveal>
+
+        {/* Filter Categories Tabs */}
+        <ScrollReveal className="flex flex-wrap justify-center gap-2 mb-12">
+          {categories.map((cat) => (
+            <Button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              variant={filter === cat ? "default" : "outline"}
+              className={`rounded-xl px-5 py-2 text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+                filter === cat 
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "border-border hover:bg-accent/80 hover:text-accent-foreground"
+              }`}
+            >
+              {cat}
+            </Button>
+          ))}
+        </ScrollReveal>
+
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((project, idx) => (
+            <ScrollReveal
+              key={project.id}
+              direction="up"
+              delay={idx * 0.05}
+              className="h-full"
+            >
+              <Dialog>
+                <DialogTrigger>
+                  <Card 
+                    onClick={() => setSelectedProject(project)}
+                    className="glass-panel border-border/80 h-full overflow-hidden flex flex-col justify-between cursor-pointer group shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/5"
+                  >
+                    <div className="space-y-4">
+                      {/* Project Image Container */}
+                      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex items-center justify-center">
+                          <span className="w-10 h-10 rounded-full bg-background/95 backdrop-blur-sm flex items-center justify-center text-primary transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-md">
+                            <ZoomIn className="h-5 w-5" />
+                          </span>
+                        </div>
+                        <Image
+                          src={project.image}
+                          alt={project.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+
+                      {/* Text details */}
+                      <div className="p-5 space-y-3">
+                        <span className="text-[10px] font-bold tracking-wider uppercase text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-md">
+                          {project.category}
+                        </span>
+                        <h3 className="font-display text-lg tracking-tight group-hover:text-primary transition-colors duration-200 text-foreground">
+                          {project.title}
+                        </h3>
+                        <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2">
+                          {project.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Tech Badges footer */}
+                    <div className="px-5 pb-5 pt-3 border-t border-border/60 flex flex-wrap gap-1.5">
+                      {project.techStack.slice(0, 3).map((tech) => (
+                        <span key={tech} className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border border-border">
+                          {tech}
+                        </span>
+                      ))}
+                      {project.techStack.length > 3 && (
+                        <span className="text-[10px] font-semibold text-muted-foreground px-1 py-0.5">
+                          +{project.techStack.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                </DialogTrigger>
+
+                {/* Project Details Dialog modal */}
+                <DialogContent className="max-w-2xl border border-border bg-background/95 backdrop-blur-md rounded-2xl p-6 overflow-hidden">
+                  {selectedProject && (
+                    <>
+                      <DialogHeader className="mb-4">
+                        <DialogTitle className="font-display text-2xl tracking-tight text-foreground">
+                          {selectedProject.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-primary text-xs font-semibold tracking-wider uppercase">
+                          {selectedProject.category}
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="space-y-6">
+                        {/* Enlarged image preview */}
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-border shadow-md">
+                          <Image
+                            src={selectedProject.image}
+                            alt={selectedProject.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+
+                        <div className="space-y-4">
+                          <h4 className="font-semibold text-sm text-foreground">Overview</h4>
+                          <p className="text-muted-foreground text-sm leading-relaxed">
+                            {selectedProject.description}
+                          </p>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-sm text-foreground">Tech Stack & Tools</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedProject.techStack.map((tech) => (
+                              <span
+                                key={tech}
+                                className="text-xs font-semibold px-3 py-1 rounded-xl bg-secondary text-secondary-foreground border border-border"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Action links */}
+                        <div className="flex gap-4 pt-4 border-t border-border/80">
+                          <a
+                            href={selectedProject.liveUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-1"
+                          >
+                            <Button className="w-full rounded-xl py-5 bg-primary text-primary-foreground hover:bg-primary/90">
+                              <ExternalLink className="mr-2 h-4 w-4" />
+                              Live Demo
+                            </Button>
+                          </a>
+                          <a
+                            href={selectedProject.githubUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-1"
+                          >
+                            <Button variant="outline" className="w-full rounded-xl py-5 border-border hover:bg-accent/80 hover:text-accent-foreground backdrop-blur-sm">
+                              <GithubIcon className="mr-2 h-4 w-4" />
+                              Source Code
+                            </Button>
+                          </a>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
