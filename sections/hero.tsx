@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { AnimatedText } from "@/components/animated-text";
 import { AnimatedGradient } from "@/components/animated-gradient";
 import { InteractiveGrid } from "@/components/interactive-grid";
@@ -68,7 +67,7 @@ export function HeroSection() {
             <motion.h1 variants={itemVariants} className="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05] text-foreground">
               I build practical web applications <br />
               with thoughtful interfaces and
-              <span className="bg-gradient-to-r from-primary via-indigo-500 to-accent-foreground bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-accent to-accent-foreground bg-clip-text text-transparent">
                 real impact.
               </span>
             </motion.h1>
@@ -78,7 +77,7 @@ export function HeroSection() {
               <span>I am a</span>
               <AnimatedText
                 words={["Full-Stack Web Developer", "Backend Builder", "Problem Solver"]}
-                className="bg-gradient-to-r from-accent-foreground to-primary bg-clip-text text-transparent font-bold"
+                className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent font-bold"
               />
             </motion.div>
 
@@ -89,16 +88,18 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-2">
-              <Link href="#portfolio">
-                <Button className="rounded-xl px-7 py-6 font-medium shadow-lg hover:shadow-primary/25 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/95 group text-md">
-                  Explore My Work
-                  <ArrowUpRight className="ml-1.5 h-4.5 w-4.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
-                </Button>
+              <Link
+                href="#portfolio"
+                className="inline-flex items-center justify-center rounded-xl px-7 py-6 font-medium shadow-lg hover:shadow-accent/25 cursor-pointer bg-primary text-primary-foreground hover:bg-accent/90 group text-md transition-all duration-300"
+              >
+                Explore My Work
+                <ArrowUpRight className="ml-1.5 h-4.5 w-4.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </Link>
-              <Link href="#contact">
-                <Button variant="outline" className="rounded-xl px-7 py-6 font-medium bg-background/50 hover:bg-accent/80 hover:text-accent-foreground backdrop-blur-sm cursor-pointer border-border text-md shadow-sm">
-                  Contact Me
-                </Button>
+              <Link
+                href="#contact"
+                className="inline-flex items-center justify-center rounded-xl px-7 py-6 font-medium bg-background/50 hover:bg-accent/80 hover:text-accent-foreground backdrop-blur-sm cursor-pointer border-border text-md shadow-sm transition-all duration-300"
+              >
+                Contact Me
               </Link>
             </motion.div>
 
@@ -139,8 +140,8 @@ export function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent-foreground/5 pointer-events-none" />
                 <div className="relative w-full h-full rounded-2xl overflow-hidden bg-muted">
                   <Image
-                    src="/images/profile.png"
-                    alt="Antigravity developer profile portrait"
+                    src="/images/w.jpg"
+                    alt=" developer profile portrait"
                     fill
                     sizes="(max-width: 768px) 280px, 400px"
                     className="object-cover transition-transform duration-700 hover:scale-105"

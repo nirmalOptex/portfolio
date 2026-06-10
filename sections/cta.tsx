@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Sparkles, Calendar } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { Button } from "@/components/ui/button";
 
 export function CallToActionSection() {
   return (
@@ -13,8 +12,8 @@ export function CallToActionSection() {
           {/* Main card box with rich gradients */}
           <div className="relative rounded-3xl overflow-hidden border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-8 md:p-12 shadow-2xl text-center">
             {/* Glowing gradient mesh backdrops */}
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[80px] pointer-events-none select-none" />
-            <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-accent/5 rounded-full blur-[80px] pointer-events-none select-none" />
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-primary/15 rounded-full blur-[80px] pointer-events-none select-none" />
+            <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-accent/10 rounded-full blur-[80px] pointer-events-none select-none" />
             
             {/* Mesh background grid lines */}
             <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none" />
@@ -37,11 +36,12 @@ export function CallToActionSection() {
 
               {/* Glowing CTA Action */}
               <div className="pt-4">
-                <Link href="#contact">
-                  <Button className="rounded-xl px-8 py-7 font-medium shadow-lg hover:shadow-primary/25 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/95 text-md group">
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Book a Free Consultation
-                  </Button>
+                <Link
+                  href="#contact"
+                  className="inline-flex items-center justify-center rounded-xl px-8 py-7 font-medium shadow-lg hover:shadow-accent/25 cursor-pointer bg-primary text-primary-foreground hover:bg-accent/90 text-md group transition-all duration-300"
+                >
+                  <Calendar className="mr-2 h-5 w-5" />
+                  Book a Free Consultation
                 </Link>
               </div>
 

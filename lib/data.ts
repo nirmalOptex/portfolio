@@ -106,7 +106,7 @@ export const projects: Project[] = [
     id: "portfolio",
     title: "Personal Portfolio",
     description: "A responsive portfolio site showcasing resume details, projects, and contact information with a clean, modern design.",
-    image: "/images/profile.png",
+    image: "/images/w.jpg",
     techStack: ["React", "Vite", "Tailwind CSS"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",

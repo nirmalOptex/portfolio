@@ -68,7 +68,7 @@ export function PortfolioSection() {
                 <DialogTrigger>
                   <Card 
                     onClick={() => setSelectedProject(project)}
-                    className="glass-panel border-border/80 h-full overflow-hidden flex flex-col justify-between cursor-pointer group shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/5"
+                    className="glass-panel border-border/80 h-full overflow-hidden flex flex-col justify-between cursor-pointer group shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-accent/10"
                   >
                     <div className="space-y-4">
                       {/* Project Image Container */}
@@ -171,7 +171,7 @@ export function PortfolioSection() {
                             rel="noreferrer"
                             className="flex-1"
                           >
-                            <Button className="w-full rounded-xl py-5 bg-primary text-primary-foreground hover:bg-primary/90">
+                            <Button className="w-full rounded-xl py-5 bg-primary text-primary-foreground hover:bg-accent/80">
                               <ExternalLink className="mr-2 h-4 w-4" />
                               Live Demo
                             </Button>

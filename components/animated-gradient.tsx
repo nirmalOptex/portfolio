@@ -10,9 +10,9 @@ interface AnimatedGradientProps {
 
 export function AnimatedGradient({ className, variant = "primary" }: AnimatedGradientProps) {
   const gradients = {
-    primary: "bg-gradient-to-tr from-primary/30 via-indigo-500/10 to-transparent",
-    secondary: "bg-gradient-to-tr from-purple-500/20 via-pink-500/10 to-transparent",
-    accent: "bg-gradient-to-tr from-cyan-400/20 via-blue-500/10 to-transparent",
+    primary: "bg-gradient-to-tr from-primary/40 via-accent/25 to-transparent",
+    secondary: "bg-gradient-to-tr from-[#0F172A]/15 via-primary/25 to-transparent",
+    accent: "bg-gradient-to-tr from-accent/35 via-primary/20 to-transparent",
   };
 
   return (
