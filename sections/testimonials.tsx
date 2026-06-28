@@ -5,9 +5,14 @@ import { Star, Quote } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { testimonials } from "@/lib/data";
+import { testimonials as localTestimonials } from "@/lib/data";
+import { Testimonial } from "@/types";
 
-export function TestimonialsSection() {
+export function TestimonialsSection({ content, testimonials }: { content?: any; testimonials?: Testimonial[] }) {
+  const activeTestimonials = testimonials || localTestimonials;
+  const title = content?.title || "Client Testimonials";
+  const body = content?.body || "Read comments from startup founders, product managers, and developers who have experienced our digital deliverables.";
+
   return (
     <section id="testimonials" className="py-24 relative overflow-hidden bg-background">
       {/* Background radial glow */}
@@ -16,11 +21,11 @@ export function TestimonialsSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            Client Testimonials
+            {title}
           </h2>
           <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-muted-foreground text-md leading-relaxed">
-            Read comments from startup founders, product managers, and developers who have experienced our digital deliverables.
+            {body}
           </p>
         </ScrollReveal>
 
@@ -34,7 +39,7 @@ export function TestimonialsSection() {
             className="w-full"
           >
             <CarouselContent>
-              {testimonials.map((test) => (
+              {activeTestimonials.map((test) => (
                 <CarouselItem key={test.id} className="md:basis-1/2 p-2">
                   <Card className="glass-panel border-border/80 h-full p-6 flex flex-col justify-between hover:border-primary/20 transition-all duration-300 relative overflow-hidden shadow-md">
                     {/* Double quote background icon */}

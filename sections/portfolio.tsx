@@ -7,19 +7,24 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
-import { projects } from "@/lib/data";
+import { projects as localProjects } from "@/lib/data";
 import { Project } from "@/types";
 import { GithubIcon } from "@/components/brand-icons";
 
-export function PortfolioSection() {
+export function PortfolioSection({ content, projects }: { content?: any; projects?: Project[] }) {
   const [filter, setFilter] = useState("All");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  const categories = ["All", "Web App", "AI", "Mobile App", "E-Commerce", "Design"];
+  const activeProjects = projects || localProjects;
+  const title = content?.title || "Featured Projects";
+  const body = content?.body || "A curated collection of digital products, showing fullstack integrations, responsive UIs, and cloud integrations.";
+
+  // Extract unique categories dynamically from activeProjects to match actual data
+  const categories = ["All", ...Array.from(new Set(activeProjects.map((p) => p.category)))];
 
   const filteredProjects = filter === "All" 
-    ? projects 
-    : projects.filter((p) => p.category === filter);
+    ? activeProjects 
+    : activeProjects.filter((p) => p.category === filter);
 
   return (
     <section id="portfolio" className="py-24 relative overflow-hidden bg-background">
@@ -29,11 +34,11 @@ export function PortfolioSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <ScrollReveal className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            Featured Projects
+            {title}
           </h2>
           <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-muted-foreground text-md leading-relaxed">
-            A curated collection of digital products, showing fullstack integrations, responsive UIs, and cloud integrations.
+            {body}
           </p>
         </ScrollReveal>
 

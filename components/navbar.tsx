@@ -8,6 +8,7 @@ import { useScroll } from "@/hooks/use-scroll";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { navLinks } from "@/lib/data";
+import { NavLink } from "@/types";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
   NavigationMenu,
@@ -16,9 +17,10 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
-export function Navbar() {
+export function Navbar({ links }: { links?: NavLink[] }) {
   const scrolled = useScroll(10);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const activeLinks = links || navLinks;
 
   return (
     <motion.header
@@ -43,7 +45,7 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-1">
           <NavigationMenu>
             <NavigationMenuList>
-              {navLinks.map((link) => (
+              {activeLinks.map((link) => (
                 <NavigationMenuItem key={link.label}>
                   <NavigationMenuLink
                     href={link.href}
@@ -92,7 +94,7 @@ export function Navbar() {
                 </div>
                 
                 <nav className="flex flex-col gap-4">
-                  {navLinks.map((link, idx) => (
+                  {activeLinks.map((link, idx) => (
                     <motion.div
                       key={link.label}
                       initial={{ x: 20, opacity: 0 }}

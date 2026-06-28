@@ -3,9 +3,14 @@
 import { Code, Palette, Smartphone, Database, Server, Sparkles, Check, type LucideIcon } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { services } from "@/lib/data";
+import { services as localServices } from "@/lib/data";
+import { Service } from "@/types";
 
-export function ServicesSection() {
+export function ServicesSection({ content, services }: { content?: any; services?: Service[] }) {
+  const activeServices = services || localServices;
+  const title = content?.title || "Core Services";
+  const body = content?.body || "I craft high-performance digital experiences tailored to your business needs, focusing on user interaction, scalability, and modern clean design.";
+
   const iconMap: Record<string, LucideIcon> = {
     code: Code,
     palette: Palette,
@@ -23,16 +28,16 @@ export function ServicesSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            Core Services
+            {title}
           </h2>
           <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-muted-foreground text-md leading-relaxed">
-            I craft high-performance digital experiences tailored to your business needs, focusing on user interaction, scalability, and modern clean design.
+            {body}
           </p>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, idx) => {
+          {activeServices.map((service, idx) => {
             const IconComponent = iconMap[service.icon] || Code;
             return (
               <ScrollReveal

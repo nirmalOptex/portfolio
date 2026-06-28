@@ -4,7 +4,22 @@ import Link from "next/link";
 import { Sparkles, Calendar } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
-export function CallToActionSection() {
+export function CallToActionSection({ content }: { content?: any }) {
+  const title = content?.title || "Want a web project that works \nfor real people?";
+  const body = content?.body || "I help turn practical ideas into reliable web and mobile tools that are easy to use and simple to maintain. If you have a project or a problem, let's talk about a sensible solution.";
+  const ctaLabel = content?.ctaLabel || "Book a Free Consultation";
+  const ctaUrl = content?.ctaUrl || "#contact";
+  const eyebrow = content?.eyebrow || "Free Technical Architecture Review Included";
+
+  const formatTitle = (text: string) => {
+    return text.split("\n").map((line, index, array) => (
+      <span key={index}>
+        {line}
+        {index < array.length - 1 && <br />}
+      </span>
+    ));
+  };
+
   return (
     <section className="py-24 relative overflow-hidden bg-background">
       <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -25,28 +40,26 @@ export function CallToActionSection() {
               </div>
 
               <h2 className="font-display text-3xl sm:text-4xl md:text-5xl tracking-tight text-foreground leading-[1.1]">
-                Want a web project that works 
-                <br />
-                for real people?
+                {formatTitle(title)}
               </h2>
 
               <p className="text-muted-foreground text-sm md:text-md leading-relaxed max-w-lg">
-                I help turn practical ideas into reliable web and mobile tools that are easy to use and simple to maintain. If you have a project or a problem, let&apos;s talk about a sensible solution.
+                {body}
               </p>
 
               {/* Glowing CTA Action */}
               <div className="pt-4">
                 <Link
-                  href="#contact"
+                  href={ctaUrl}
                   className="inline-flex items-center justify-center rounded-xl px-8 py-7 font-medium shadow-lg hover:shadow-accent/25 cursor-pointer bg-primary text-primary-foreground hover:bg-accent/90 text-md group transition-all duration-300"
                 >
                   <Calendar className="mr-2 h-5 w-5" />
-                  Book a Free Consultation
+                  {ctaLabel}
                 </Link>
               </div>
 
               <span className="text-[11px] font-semibold text-muted-foreground tracking-wider uppercase">
-                Free Technical Architecture Review Included
+                {eyebrow}
               </span>
             </div>
           </div>

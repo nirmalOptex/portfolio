@@ -20,9 +20,16 @@ const contactSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
-export function ContactSection() {
+import { SocialLink } from "@/types";
+
+export function ContactSection({ content, socialLinks }: { content?: any; socialLinks?: SocialLink[] }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const title = content?.title || "Get in Touch";
+  const body = content?.body || "Have a project in mind or want to collaborate? Fill out the form below, and I'll get back to you within 24 hours.";
+  const emailVal = content?.metadata?.email || "nirmal@portfolio.dev";
+  const locationVal = content?.metadata?.location || "Remote friendly / IIMS College";
 
   const {
     register,
@@ -33,24 +40,60 @@ export function ContactSection() {
     resolver: zodResolver(contactSchema),
   });
 
-  const onSubmit = async () => {
+  const onSubmit = async (formData: ContactFormValues) => {
     setIsSubmitting(true);
-    // Simulate API request delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    reset();
-    
-    // Reset success banner after 5 seconds
-    setTimeout(() => setIsSuccess(false), 5000);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const res = await fetch(`${apiUrl}/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: "Portfolio Form Submission",
+          source: "NextJS Frontend",
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit form");
+      }
+
+      setIsSuccess(true);
+      reset();
+      
+      // Reset success banner after 5 seconds
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (err) {
+      console.error("Error submitting contact message:", err);
+      alert("Failed to send message. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const socials = [
-    { label: "GitHub", href: "https://github.com", icon: GithubIcon },
-    { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedinIcon },
-    { label: "Twitter", href: "https://twitter.com", icon: TwitterIcon },
-    { label: "Dribbble", href: "https://dribbble.com", icon: DribbbleIcon },
-  ];
+  const iconMap: Record<string, any> = {
+    github: GithubIcon,
+    linkedin: LinkedinIcon,
+    twitter: TwitterIcon,
+    dribbble: DribbbleIcon,
+  };
+
+  const activeSocials = socialLinks
+    ? socialLinks.map((s) => ({
+        label: s.label,
+        href: s.href,
+        icon: iconMap[s.icon] || GithubIcon,
+      }))
+    : [
+        { label: "GitHub", href: "https://github.com", icon: GithubIcon },
+        { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedinIcon },
+        { label: "Twitter", href: "https://twitter.com", icon: TwitterIcon },
+        { label: "Dribbble", href: "https://dribbble.com", icon: DribbbleIcon },
+      ];
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden bg-background">
@@ -60,11 +103,11 @@ export function ContactSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            Get in Touch
+            {title}
           </h2>
           <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-muted-foreground text-md leading-relaxed">
-            Have a project in mind or want to collaborate? Fill out the form below, and I&apos;ll get back to you within 24 hours.
+            {body}
           </p>
         </ScrollReveal>
 
@@ -87,8 +130,8 @@ export function ContactSection() {
                   </div>
                   <div>
                     <h4 className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground">Email Me</h4>
-                    <a href="mailto:nirmal@portfolio.dev" className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200">
-                      nirmal@portfolio.dev
+                    <a href={`mailto:${emailVal}`} className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200">
+                      {emailVal}
                     </a>
                   </div>
                 </div>
@@ -100,7 +143,7 @@ export function ContactSection() {
                   <div>
                     <h4 className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground">Location</h4>
                     <p className="text-sm font-semibold text-foreground">
-                      Remote friendly / IIMS College
+                      {locationVal}
                     </p>
                   </div>
                 </div>
@@ -110,7 +153,7 @@ export function ContactSection() {
               <div className="space-y-3 pt-6 border-t border-border/80">
                 <h4 className="text-xs font-bold tracking-wider uppercase text-muted-foreground">Follow Me</h4>
                 <div className="flex gap-2">
-                  {socials.map((social) => {
+                  {activeSocials.map((social) => {
                     const Icon = social.icon;
                     return (
                       <a

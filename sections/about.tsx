@@ -2,14 +2,24 @@
 
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Card, CardContent } from "@/components/ui/card";
-import { skills } from "@/lib/data";
+import { skills as localSkills } from "@/lib/data";
+import { Skill } from "@/types";
 
-export function AboutSection() {
+export function AboutSection({ content, skills }: { content?: any; skills?: Skill[] }) {
+  const activeSkills = skills || localSkills;
+
+  const title = content?.title || "About Me & Skills";
+  const body = content?.body || "I am a full-stack engineer driven by visual aesthetics and code performance. I bridge the gap between design and engineering to build products that feel incredibly premium.";
+  
+  const storyTitle = content?.metadata?.storyTitle || "My Story & Mission";
+  const storyBody1 = content?.metadata?.storyBody1 || "I am a BCS undergraduate at IIMS College with real project experience in full-stack web development and the basics of machine learning. My work is grounded in real-life problems and practical digital solutions.";
+  const storyBody2 = content?.metadata?.storyBody2 || "I believe good software should be easy to use, easy to maintain, and built to help people move faster. I enjoy turning detailed user needs into clear interfaces and real digital tools.";
+
   const stats = [
-    { value: "5+", label: "Years Experience" },
-    { value: "50+", label: "Projects Delivered" },
-    { value: "99%", label: "Client Satisfaction" },
-    { value: "100%", label: "Lighthouse Score target" },
+    { value: content?.metadata?.stat1Value || "5+", label: content?.metadata?.stat1Label || "Years Experience" },
+    { value: content?.metadata?.stat2Value || "50+", label: content?.metadata?.stat2Label || "Projects Delivered" },
+    { value: content?.metadata?.stat3Value || "99%", label: content?.metadata?.stat3Label || "Client Satisfaction" },
+    { value: content?.metadata?.stat4Value || "100%", label: content?.metadata?.stat4Label || "Lighthouse Score target" },
   ];
 
   const categories = ["Frontend", "Backend", "Design", "DevOps"];
@@ -22,11 +32,11 @@ export function AboutSection() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            About Me & Skills
+            {title}
           </h2>
           <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-muted-foreground text-md leading-relaxed">
-            I am a full-stack engineer driven by visual aesthetics and code performance. I bridge the gap between design and engineering to build products that feel incredibly premium.
+            {body}
           </p>
         </ScrollReveal>
 
@@ -35,13 +45,13 @@ export function AboutSection() {
           <div className="lg:col-span-6 space-y-6">
             <ScrollReveal direction="left" delay={0.1}>
               <h3 className="font-display text-2xl tracking-tight mb-4 text-foreground">
-                My Story & Mission
+                {storyTitle}
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                I am a BCS undergraduate at IIMS College with real project experience in full-stack web development and the basics of machine learning. My work is grounded in real-life problems and practical digital solutions.
+                {storyBody1}
               </p>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                I believe good software should be easy to use, easy to maintain, and built to help people move faster. I enjoy turning detailed user needs into clear interfaces and real digital tools.
+                {storyBody2}
               </p>
             </ScrollReveal>
 
@@ -72,7 +82,7 @@ export function AboutSection() {
 
             <div className="space-y-6">
               {categories.map((category, idx) => {
-                const categorySkills = skills.filter((s) => s.category === category);
+                const categorySkills = activeSkills.filter((s) => s.category === category);
                 return (
                   <ScrollReveal
                     key={category}

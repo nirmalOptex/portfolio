@@ -5,17 +5,26 @@ import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { navLinks } from "@/lib/data";
 import { GithubIcon, LinkedinIcon, TwitterIcon, DribbbleIcon } from "@/components/brand-icons";
+import { NavLink, SocialLink } from "@/types";
 
-export function Footer() {
+export function Footer({ links, socialLinks }: { links?: NavLink[]; socialLinks?: SocialLink[] }) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const socials = [
-    { label: "GitHub", href: "https://github.com", icon: GithubIcon },
-    { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedinIcon },
-    { label: "Twitter", href: "https://twitter.com", icon: TwitterIcon },
-    { label: "Dribbble", href: "https://dribbble.com", icon: DribbbleIcon },
+  const iconMap: Record<string, any> = {
+    github: GithubIcon,
+    linkedin: LinkedinIcon,
+    twitter: TwitterIcon,
+    dribbble: DribbbleIcon,
+  };
+
+  const activeLinks = links || navLinks;
+  const activeSocials = socialLinks || [
+    { label: "GitHub", href: "https://github.com", icon: "github" },
+    { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
+    { label: "Twitter", href: "https://twitter.com", icon: "twitter" },
+    { label: "Dribbble", href: "https://dribbble.com", icon: "dribbble" },
   ];
 
   return (
@@ -41,7 +50,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-semibold text-sm tracking-wider uppercase text-foreground">Navigation</h4>
             <ul className="space-y-2">
-              {navLinks.slice(0, 4).map((link) => (
+              {activeLinks.slice(0, 4).map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">
                     {link.label}
@@ -55,8 +64,8 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-semibold text-sm tracking-wider uppercase text-foreground">Connect</h4>
             <div className="flex gap-3">
-              {socials.map((social) => {
-                const Icon = social.icon;
+              {activeSocials.map((social) => {
+                const Icon = iconMap[social.icon] || GithubIcon;
                 return (
                   <a
                     key={social.label}
@@ -82,8 +91,17 @@ export function Footer() {
 
         {/* Copyright & Scroll to Top */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Nirmal Maharjan. Designed and built with care.
+          <p className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
+            <span>© {new Date().getFullYear()} Nirmal Maharjan. Designed and built with care.</span>
+            <span className="text-muted-foreground/35">•</span>
+            <a
+              href="http://localhost:3001/admin"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-primary transition-colors duration-200 underline underline-offset-4 decoration-muted-foreground/30 hover:decoration-primary"
+            >
+              Admin Panel
+            </a>
           </p>
           <Button
             variant="outline"
