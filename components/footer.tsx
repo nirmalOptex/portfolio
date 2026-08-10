@@ -3,46 +3,45 @@
 import Link from "next/link";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { navLinks } from "@/lib/data";
-import { GithubIcon, LinkedinIcon, TwitterIcon, DribbbleIcon } from "@/components/brand-icons";
-import { NavLink, SocialLink } from "@/types";
+import { navLinks, socialLinks, siteConfig, footerContent } from "@/lib/site";
+import { GithubIcon, LinkedinIcon } from "@/components/brand-icons";
 
-export function Footer({ links, socialLinks }: { links?: NavLink[]; socialLinks?: SocialLink[] }) {
+const iconMap = {
+  github: GithubIcon,
+  linkedin: LinkedinIcon,
+} as const;
+
+export function Footer() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // `scroll-smooth` on <html> already respects prefers-reduced-motion, but
+    // the JS API does not — so ask the browser directly.
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
   };
-
-  const iconMap: Record<string, any> = {
-    github: GithubIcon,
-    linkedin: LinkedinIcon,
-    twitter: TwitterIcon,
-    dribbble: DribbbleIcon,
-  };
-
-  const activeLinks = links || navLinks;
-  const activeSocials = socialLinks || [
-    { label: "GitHub", href: "https://github.com", icon: "github" },
-    { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
-    { label: "Twitter", href: "https://twitter.com", icon: "twitter" },
-    { label: "Dribbble", href: "https://dribbble.com", icon: "dribbble" },
-  ];
 
   return (
     <footer className="border-t border-border bg-background/50 relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] pointer-events-none" />
-      
+
       <div className="container mx-auto px-4 md:px-6 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Logo Column */}
           <div className="md:col-span-2 space-y-4">
-            <Link href="#home" className="flex items-center gap-2">
+            <Link
+              href="#home"
+              className="flex items-center gap-2 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50 w-fit"
+            >
               <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-accent-foreground flex items-center justify-center font-bold text-primary-foreground text-lg shadow-md">
-                N
+                {siteConfig.shortName.charAt(0)}
               </span>
-              <span className="font-display text-xl tracking-tight">Nirmal</span>
+              <span className="font-display text-xl tracking-tight">
+                {siteConfig.shortName}
+              </span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-sm">
-              I build web apps and backend tools that are practical, reliable, and easy to use. My goal is to help teams solve real problems with thoughtful software.
+              {footerContent.tagline}
             </p>
           </div>
 
@@ -50,9 +49,12 @@ export function Footer({ links, socialLinks }: { links?: NavLink[]; socialLinks?
           <div className="space-y-4">
             <h4 className="font-semibold text-sm tracking-wider uppercase text-foreground">Navigation</h4>
             <ul className="space-y-2">
-              {activeLinks.slice(0, 4).map((link) => (
+              {navLinks.slice(0, 4).map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200">
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 rounded outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -64,15 +66,15 @@ export function Footer({ links, socialLinks }: { links?: NavLink[]; socialLinks?
           <div className="space-y-4">
             <h4 className="font-semibold text-sm tracking-wider uppercase text-foreground">Connect</h4>
             <div className="flex gap-3">
-              {activeSocials.map((social) => {
-                const Icon = iconMap[social.icon] || GithubIcon;
+              {socialLinks.map((social) => {
+                const Icon = iconMap[social.icon as keyof typeof iconMap] ?? GithubIcon;
                 return (
                   <a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-9 h-9 rounded-xl border border-border bg-background/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-all duration-300 shadow-sm"
+                    className="w-9 h-9 rounded-xl border border-border bg-background/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/45 transition-all duration-300 shadow-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
                   >
                     <Icon className="h-4.5 w-4.5" />
                     <span className="sr-only">{social.label}</span>
@@ -81,7 +83,7 @@ export function Footer({ links, socialLinks }: { links?: NavLink[]; socialLinks?
               })}
             </div>
             <p className="text-sm text-muted-foreground">
-              Based in San Francisco, CA
+              Based in {siteConfig.location} · {siteConfig.availability}
             </p>
           </div>
         </div>
@@ -91,17 +93,8 @@ export function Footer({ links, socialLinks }: { links?: NavLink[]; socialLinks?
 
         {/* Copyright & Scroll to Top */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
-            <span>© {new Date().getFullYear()} Nirmal Maharjan. Designed and built with care.</span>
-            <span className="text-muted-foreground/35">•</span>
-            <a
-              href="http://localhost:3001/admin"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-primary transition-colors duration-200 underline underline-offset-4 decoration-muted-foreground/30 hover:decoration-primary"
-            >
-              Admin Panel
-            </a>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} {siteConfig.name}. Designed and built with care.
           </p>
           <Button
             variant="outline"

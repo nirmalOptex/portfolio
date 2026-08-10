@@ -2,85 +2,51 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { AnimatedText } from "@/components/animated-text";
 import { AnimatedGradient } from "@/components/animated-gradient";
 import { InteractiveGrid } from "@/components/interactive-grid";
-import { GithubIcon, LinkedinIcon, TwitterIcon, DribbbleIcon } from "@/components/brand-icons";
+import { SocialLinks } from "@/components/social-links";
+import { heroContent, siteConfig } from "@/lib/site";
 
-import { SocialLink } from "@/types";
+export function HeroSection() {
+  const reduceMotion = useReducedMotion();
 
-export function HeroSection({ content, socialLinks }: { content?: any; socialLinks?: SocialLink[] }) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: reduceMotion ? 0 : 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 25, opacity: 0 },
+    hidden: { y: reduceMotion ? 0 : 25, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.7,
+        duration: reduceMotion ? 0.01 : 0.7,
         ease: [0.215, 0.61, 0.355, 1] as const,
       },
     },
   };
 
-  const iconMap: Record<string, any> = {
-    github: GithubIcon,
-    linkedin: LinkedinIcon,
-    twitter: TwitterIcon,
-    dribbble: DribbbleIcon,
-  };
-
-  const activeSocials = socialLinks
-    ? socialLinks.map((s) => ({
-        label: s.label,
-        href: s.href,
-        icon: iconMap[s.icon] || GithubIcon,
-      }))
-    : [
-        { label: "GitHub", href: "https://github.com", icon: GithubIcon },
-        { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedinIcon },
-        { label: "Twitter", href: "https://twitter.com", icon: TwitterIcon },
-        { label: "Dribbble", href: "https://dribbble.com", icon: DribbbleIcon },
-      ];
-
-  const eyebrow = content?.eyebrow || "BCS Student at IIMS College";
-  const title = content?.title || "I build practical web applications \nwith thoughtful interfaces and\nreal impact.";
-  const body = content?.body || "I'm Nirmal Maharjan, a BCS student at IIMS College who builds web apps, backend systems, and real-time tools. My work is practical, user-centered, and designed to solve everyday problems.";
-  const ctaLabel = content?.ctaLabel || "Explore My Work";
-  const ctaUrl = content?.ctaUrl || "#portfolio";
-  const secondaryCtaLabel = content?.secondaryCtaLabel || "Contact Me";
-  const secondaryCtaUrl = content?.secondaryCtaUrl || "#contact";
-  const profileImage = content?.imageUrl || "/images/w.jpg";
-  const words = content?.subtitle
-    ? content.subtitle.split(",").map((w: string) => w.trim())
-    : ["Full-Stack Web Developer", "Backend Builder", "Problem Solver"];
-
-  // Helper to safely preserve br elements or text format
-  const formatTitle = (text: string) => {
-    return text.split("\n").map((line, index, array) => (
-      <span key={index}>
-        {line}
-        {index < array.length - 1 && <br />}
-      </span>
-    ));
-  };
+  /** The headline carries authored line breaks; render them as real <br>s. */
+  const titleLines = heroContent.title.split("\n");
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-background">
+    <section
+      id="home"
+      aria-label="Introduction"
+      className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-background"
+    >
       {/* Interactive Background Canvas */}
       <InteractiveGrid />
-      
+
       {/* Background Glowing Blurs */}
       <AnimatedGradient className="-top-40 -left-40 w-[550px] h-[550px]" variant="primary" />
       <AnimatedGradient className="top-1/3 -right-40 w-[600px] h-[600px]" variant="accent" />
@@ -96,66 +62,55 @@ export function HeroSection({ content, socialLinks }: { content?: any; socialLin
           <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-6">
             {/* Availability Badge */}
             <motion.div variants={itemVariants} className="inline-flex items-center gap-2 self-start px-3.5 py-1 rounded-full border border-primary/20 bg-primary/10 text-primary text-xs font-semibold tracking-wide">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              {eyebrow}
+              <span className="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse" />
+              {heroContent.eyebrow}
             </motion.div>
 
             {/* Main Headline */}
             <motion.h1 variants={itemVariants} className="font-display text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05] text-foreground">
-              {formatTitle(title)}
+              {titleLines.map((line, index) => (
+                <span key={index}>
+                  {line}
+                  {index < titleLines.length - 1 && <br />}
+                </span>
+              ))}
             </motion.h1>
 
             {/* Sub-headline word-cycler */}
             <motion.div variants={itemVariants} className="text-xl md:text-2xl font-semibold text-muted-foreground flex flex-wrap gap-2 items-center">
               <span>I am a</span>
               <AnimatedText
-                words={words}
+                words={[...heroContent.rotatingWords]}
                 className="bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent font-bold"
               />
             </motion.div>
 
             {/* Intro paragraph */}
-            <motion.p variants={itemVariants} className="text-muted-foreground text-md md:text-lg max-w-xl leading-relaxed">
-              {body}
+            <motion.p variants={itemVariants} className="text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed">
+              {heroContent.body}
             </motion.p>
 
             {/* CTA Buttons */}
             <motion.div variants={itemVariants} className="flex flex-wrap gap-4 pt-2">
               <Link
-                href={ctaUrl}
-                className="inline-flex items-center justify-center rounded-xl px-7 py-6 font-medium shadow-lg hover:shadow-accent/25 cursor-pointer bg-primary text-primary-foreground hover:bg-accent/90 group text-md transition-all duration-300"
+                href={heroContent.primaryCta.href}
+                className="inline-flex items-center justify-center rounded-xl px-7 py-6 font-medium shadow-lg hover:shadow-accent/25 cursor-pointer bg-primary text-primary-foreground hover:bg-accent/90 group text-base transition-all duration-300 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                {ctaLabel}
+                {heroContent.primaryCta.label}
                 <ArrowUpRight className="ml-1.5 h-4.5 w-4.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
               </Link>
               <Link
-                href={secondaryCtaUrl}
-                className="inline-flex items-center justify-center rounded-xl px-7 py-6 font-medium bg-background/50 hover:bg-accent/80 hover:text-accent-foreground backdrop-blur-sm cursor-pointer border-border text-md shadow-sm transition-all duration-300"
+                href={heroContent.secondaryCta.href}
+                className="inline-flex items-center justify-center rounded-xl px-7 py-6 font-medium bg-background/50 hover:bg-accent/80 hover:text-accent-foreground backdrop-blur-sm cursor-pointer border border-border text-base shadow-sm transition-all duration-300 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                {secondaryCtaLabel}
+                {heroContent.secondaryCta.label}
               </Link>
             </motion.div>
 
             {/* Social Links */}
             <motion.div variants={itemVariants} className="flex items-center gap-4 pt-6 border-t border-border/60 max-w-sm">
               <span className="text-xs font-semibold tracking-wider uppercase text-muted-foreground">Follow Me:</span>
-              <div className="flex gap-2">
-                {activeSocials.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-8 h-8 rounded-lg border border-border bg-background/40 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300 shadow-sm"
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span className="sr-only">{social.label}</span>
-                    </a>
-                  );
-                })}
-              </div>
+              <SocialLinks size="sm" />
             </motion.div>
           </div>
 
@@ -166,41 +121,43 @@ export function HeroSection({ content, socialLinks }: { content?: any; socialLin
               className="relative w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] lg:w-[400px] lg:h-[400px]"
             >
               {/* Outer decorative glowing ring */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-primary to-accent-foreground blur-xl opacity-30 animate-pulse-glow" />
-              
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-primary to-accent-foreground blur-xl opacity-30 motion-safe:animate-pulse-glow" />
+
               {/* Frame */}
               <div className="relative w-full h-full rounded-3xl border border-border bg-background/80 p-3 shadow-2xl backdrop-blur-sm overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent-foreground/5 pointer-events-none" />
                 <div className="relative w-full h-full rounded-2xl overflow-hidden bg-muted">
                   <Image
-                    src={profileImage}
-                    alt="developer profile portrait"
+                    src={heroContent.image}
+                    alt={`${siteConfig.name}, ${siteConfig.role}`}
                     fill
-                    sizes="(max-width: 768px) 280px, 400px"
+                    sizes="(max-width: 640px) 280px, (max-width: 1024px) 360px, 400px"
                     className="object-cover transition-transform duration-700 hover:scale-105"
                     priority
                   />
                 </div>
               </div>
 
-              {/* Floating micro items for high-tech premium feel */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-4 -left-4 glass-panel border-border/80 px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2"
-              >
-                <span className="text-xl">🚀</span>
-                <span className="text-xs font-semibold">Speed Optimizer</span>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute -bottom-4 -right-4 glass-panel border-border/80 px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2"
-              >
-                <span className="text-xl">🎨</span>
-                <span className="text-xs font-semibold">Sleek Interactions</span>
-              </motion.div>
+              {/* Floating badges — decorative, so they stay out of the a11y tree */}
+              {heroContent.badges.map((badge, idx) => (
+                <motion.div
+                  key={badge.label}
+                  aria-hidden="true"
+                  animate={reduceMotion ? undefined : { y: idx === 0 ? [0, -10, 0] : [0, 10, 0] }}
+                  transition={{
+                    duration: 4 + idx,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: idx * 0.5,
+                  }}
+                  className={`absolute glass-panel border-border/80 px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2 ${
+                    idx === 0 ? "-top-4 -left-4" : "-bottom-4 -right-4"
+                  }`}
+                >
+                  <span className="text-xl">{badge.emoji}</span>
+                  <span className="text-xs font-semibold">{badge.label}</span>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </motion.div>

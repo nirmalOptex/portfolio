@@ -4,32 +4,27 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Mail, MapPin, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Mail, MapPin, CheckCircle, ArrowRight } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeading } from "@/components/section-heading";
+import { SocialLinks } from "@/components/social-links";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { GithubIcon, LinkedinIcon, TwitterIcon, DribbbleIcon } from "@/components/brand-icons";
+import { contactContent, siteConfig } from "@/lib/site";
 
 const contactSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
+  // `z.email()`, not `z.string().email()` — the latter is deprecated in Zod v4.
+  email: z.email({ message: "Please enter a valid email address." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
 type ContactFormValues = z.infer<typeof contactSchema>;
 
-import { SocialLink } from "@/types";
-
-export function ContactSection({ content, socialLinks }: { content?: any; socialLinks?: SocialLink[] }) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  const title = content?.title || "Get in Touch";
-  const body = content?.body || "Have a project in mind or want to collaborate? Fill out the form below, and I'll get back to you within 24 hours.";
-  const emailVal = content?.metadata?.email || "nirmal@portfolio.dev";
-  const locationVal = content?.metadata?.location || "Remote friendly / IIMS College";
+export function ContactSection() {
+  const [isSent, setIsSent] = useState(false);
 
   const {
     register,
@@ -40,110 +35,81 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
     resolver: zodResolver(contactSchema),
   });
 
-  const onSubmit = async (formData: ContactFormValues) => {
-    setIsSubmitting(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-      const res = await fetch(`${apiUrl}/contact`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          subject: "Portfolio Form Submission",
-          source: "NextJS Frontend",
-        }),
-      });
+  /**
+   * There is no backend, so a validated submission hands off to the visitor's
+   * mail client with the fields pre-filled. That keeps the message in their
+   * sent folder and gives them a reply-to address for free.
+   */
+  const onSubmit = (formData: ContactFormValues) => {
+    const subject = `Portfolio enquiry from ${formData.name}`;
+    const body = `${formData.message}\n\n—\n${formData.name}\n${formData.email}`;
 
-      if (!res.ok) {
-        throw new Error("Failed to submit form");
-      }
+    window.location.href = `mailto:${siteConfig.email}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
 
-      setIsSuccess(true);
-      reset();
-      
-      // Reset success banner after 5 seconds
-      setTimeout(() => setIsSuccess(false), 5000);
-    } catch (err) {
-      console.error("Error submitting contact message:", err);
-      alert("Failed to send message. Please try again later.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    setIsSent(true);
+    reset();
   };
-
-  const iconMap: Record<string, any> = {
-    github: GithubIcon,
-    linkedin: LinkedinIcon,
-    twitter: TwitterIcon,
-    dribbble: DribbbleIcon,
-  };
-
-  const activeSocials = socialLinks
-    ? socialLinks.map((s) => ({
-        label: s.label,
-        href: s.href,
-        icon: iconMap[s.icon] || GithubIcon,
-      }))
-    : [
-        { label: "GitHub", href: "https://github.com", icon: GithubIcon },
-        { label: "LinkedIn", href: "https://linkedin.com", icon: LinkedinIcon },
-        { label: "Twitter", href: "https://twitter.com", icon: TwitterIcon },
-        { label: "Dribbble", href: "https://dribbble.com", icon: DribbbleIcon },
-      ];
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden bg-background">
+    <section
+      id="contact"
+      aria-labelledby="contact-heading"
+      className="py-24 relative overflow-hidden bg-background"
+    >
       {/* Background decoration dots */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.1] pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            {title}
-          </h2>
-          <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
-          <p className="text-muted-foreground text-md leading-relaxed">
-            {body}
-          </p>
-        </ScrollReveal>
+        <SectionHeading
+          id="contact-heading"
+          title={contactContent.title}
+          body={contactContent.body}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-5xl mx-auto items-start">
           {/* Metadata Sidebar */}
           <div className="lg:col-span-5 space-y-8">
             <ScrollReveal direction="left" className="space-y-6">
               <h3 className="font-display text-2xl tracking-tight text-foreground">
-                Contact Information
+                {contactContent.sidebarTitle}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Feel free to reach out directly via email, or follow me on my social channels to keep up to date with my current projects.
+                {contactContent.sidebarBody}
               </p>
 
               {/* Info Items */}
               <div className="space-y-4 pt-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                  <div
+                    aria-hidden="true"
+                    className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0"
+                  >
                     <Mail className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <h4 className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground">Email Me</h4>
-                    <a href={`mailto:${emailVal}`} className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200">
-                      {emailVal}
+                    <a
+                      href={`mailto:${siteConfig.email}`}
+                      className="text-sm font-semibold text-foreground hover:text-primary transition-colors duration-200 rounded outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                    >
+                      {siteConfig.email}
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                  <div
+                    aria-hidden="true"
+                    className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0"
+                  >
                     <MapPin className="h-4.5 w-4.5" />
                   </div>
                   <div>
                     <h4 className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground">Location</h4>
                     <p className="text-sm font-semibold text-foreground">
-                      {locationVal}
+                      {siteConfig.location}
                     </p>
                   </div>
                 </div>
@@ -152,23 +118,7 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
               {/* Social Channels */}
               <div className="space-y-3 pt-6 border-t border-border/80">
                 <h4 className="text-xs font-bold tracking-wider uppercase text-muted-foreground">Follow Me</h4>
-                <div className="flex gap-2">
-                  {activeSocials.map((social) => {
-                    const Icon = social.icon;
-                    return (
-                      <a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-9 h-9 rounded-xl border border-border bg-background/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all duration-300 shadow-sm"
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span className="sr-only">{social.label}</span>
-                      </a>
-                    );
-                  })}
-                </div>
+                <SocialLinks size="md" />
               </div>
             </ScrollReveal>
           </div>
@@ -176,18 +126,33 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
           {/* Form Block */}
           <div className="lg:col-span-7">
             <ScrollReveal direction="right" className="glass-panel border-border/80 p-6 md:p-8 rounded-2xl shadow-xl">
-              {isSuccess ? (
-                <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in">
-                  <CheckCircle className="h-14 w-14 text-emerald-500 animate-bounce" />
+              {isSent ? (
+                <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+                  <CheckCircle aria-hidden="true" className="h-14 w-14 text-emerald-500" />
                   <h3 className="font-display text-xl tracking-tight text-foreground">
-                    Message Sent Successfully!
+                    Your email client is open
                   </h3>
                   <p className="text-muted-foreground text-sm max-w-sm">
-                    Thank you for reaching out! I have received your message and will get back to you as soon as possible.
+                    I have pre-filled a draft addressed to me — press send there and
+                    it is on its way. If nothing opened, email me directly at{" "}
+                    <a
+                      href={`mailto:${siteConfig.email}`}
+                      className="font-semibold text-foreground hover:text-primary underline underline-offset-4 rounded outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                    >
+                      {siteConfig.email}
+                    </a>
+                    .
                   </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsSent(false)}
+                    className="rounded-xl px-5 py-4 border-border hover:bg-accent/80 hover:text-accent-foreground cursor-pointer"
+                  >
+                    Write another message
+                  </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
                   {/* Name field */}
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -196,11 +161,14 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
                     <Input
                       id="name"
                       placeholder="Your name"
+                      autoComplete="name"
+                      aria-invalid={errors.name ? true : undefined}
+                      aria-describedby={errors.name ? "name-error" : undefined}
                       className="rounded-xl border-border bg-background/50 focus-visible:ring-primary/40 focus-visible:border-primary transition-all duration-300 py-5"
                       {...register("name")}
                     />
                     {errors.name && (
-                      <p className="text-xs text-destructive font-medium mt-1">
+                      <p id="name-error" className="text-xs text-destructive font-medium mt-1">
                         {errors.name.message}
                       </p>
                     )}
@@ -215,11 +183,14 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
                       id="email"
                       type="email"
                       placeholder="you@example.com"
+                      autoComplete="email"
+                      aria-invalid={errors.email ? true : undefined}
+                      aria-describedby={errors.email ? "email-error" : undefined}
                       className="rounded-xl border-border bg-background/50 focus-visible:ring-primary/40 focus-visible:border-primary transition-all duration-300 py-5"
                       {...register("email")}
                     />
                     {errors.email && (
-                      <p className="text-xs text-destructive font-medium mt-1">
+                      <p id="email-error" className="text-xs text-destructive font-medium mt-1">
                         {errors.email.message}
                       </p>
                     )}
@@ -234,12 +205,18 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
                       id="message"
                       rows={5}
                       placeholder="Tell me about your project..."
+                      aria-invalid={errors.message ? true : undefined}
+                      aria-describedby={errors.message ? "message-error" : "message-hint"}
                       className="rounded-xl border-border bg-background/50 focus-visible:ring-primary/40 focus-visible:border-primary transition-all duration-300"
                       {...register("message")}
                     />
-                    {errors.message && (
-                      <p className="text-xs text-destructive font-medium mt-1">
+                    {errors.message ? (
+                      <p id="message-error" className="text-xs text-destructive font-medium mt-1">
                         {errors.message.message}
+                      </p>
+                    ) : (
+                      <p id="message-hint" className="text-xs text-muted-foreground mt-1">
+                        Submitting opens a pre-filled draft in your email app.
                       </p>
                     )}
                   </div>
@@ -247,20 +224,10 @@ export function ContactSection({ content, socialLinks }: { content?: any; social
                   {/* Submit button */}
                   <Button
                     type="submit"
-                    disabled={isSubmitting}
                     className="w-full rounded-xl py-6 font-semibold shadow-md bg-primary text-primary-foreground hover:bg-accent/90 transition-all duration-300 cursor-pointer flex items-center justify-center"
                   >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending Message...
-                      </>
-                    ) : (
-                      <>
-                        Send Message
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
+                    Compose Message
+                    <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                   </Button>
                 </form>
               )}

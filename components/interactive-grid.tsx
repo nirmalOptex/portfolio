@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 
 export function InteractiveGrid() {
-  const [mounted] = useState<boolean>(() => typeof window !== "undefined");
   const containerRef = useRef<HTMLDivElement>(null);
-  
+  const reduceMotion = useReducedMotion();
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -15,31 +15,47 @@ export function InteractiveGrid() {
   const glowY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
+    // Touch devices have no hovering cursor to follow, and a reduced-motion
+    // request means the glow should sit still — skip the listener entirely
+    // rather than doing the work and discarding it.
+    const isFinePointer = window.matchMedia("(pointer: fine)").matches;
+    if (!isFinePointer || reduceMotion) return;
+
+    let frame = 0;
+    let pending: { x: number; y: number } | null = null;
+
+    const flush = () => {
+      frame = 0;
+      if (!pending || !containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      mouseX.set(x);
-      mouseY.set(y);
+      mouseX.set(pending.x - rect.left);
+      mouseY.set(pending.y - rect.top);
+      pending = null;
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    // mousemove fires far faster than the display refreshes; coalescing to one
+    // read per frame keeps getBoundingClientRect off the hot path.
+    const handleMouseMove = (e: MouseEvent) => {
+      pending = { x: e.clientX, y: e.clientY };
+      if (!frame) frame = requestAnimationFrame(flush);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      if (frame) cancelAnimationFrame(frame);
     };
-  }, [mouseX, mouseY]);
-
-  if (!mounted) return null;
+  }, [mouseX, mouseY, reduceMotion]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
+      aria-hidden="true"
       className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none select-none z-[1]"
     >
       {/* Light dot grid */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.25] dark:opacity-[0.15]" />
-      
+
       {/* Interactive mouse follow radial gradient */}
       <motion.div
         className="absolute w-[450px] h-[450px] rounded-full bg-radial from-primary/10 via-accent/5 to-transparent filter blur-[60px] pointer-events-none"

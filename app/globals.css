@@ -224,6 +224,29 @@
   animation: pulseGlow 10s ease-in-out infinite;
 }
 
+/*
+ * Global reduced-motion escape hatch.
+ *
+ * framer-motion is handled separately via <MotionConfig reducedMotion="user">;
+ * this covers the CSS keyframes and Tailwind's own transition utilities, which
+ * that config cannot reach. Durations are collapsed rather than removed so
+ * transitionend listeners still fire.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Title Font settings */
 .font-display {
   font-family: var(--font-heading), system-ui, sans-serif;

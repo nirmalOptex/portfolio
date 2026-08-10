@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { siteConfig } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -13,21 +14,25 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
+const pageTitle = `${siteConfig.name} | ${siteConfig.role}`;
+
 export const metadata: Metadata = {
-  title: "Nirmal Maharjan | Full-Stack Web Developer",
-  description: "BCS undergraduate building human-centered web applications, real-time systems, and practical digital solutions with React, Laravel, Firebase, and Python.",
-  metadataBase: new URL("https://nirmal-maharjan.dev"),
+  title: pageTitle,
+  description: siteConfig.description,
+  metadataBase: new URL(siteConfig.url),
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
   openGraph: {
-    title: "Nirmal Maharjan | Full-Stack Web Developer",
-    description: "BCS student at IIMS College delivering responsive web apps, backend systems, and real-life project solutions.",
-    url: "https://nirmal-maharjan.dev",
-    siteName: "Nirmal Maharjan Portfolio",
+    title: pageTitle,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: `${siteConfig.name} Portfolio`,
     images: [
       {
-        url: "/images/project-saas.png",
+        url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: " Portfolio preview",
+        alt: `${siteConfig.name} portfolio preview`,
       },
     ],
     locale: "en_US",
@@ -35,9 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nirmal Maharjan | Premium Full-Stack Portfolio",
-    description: "Design-focused Full-Stack developer portfolio and modern creative services website.",
-    images: ["/images/project-saas.png"],
+    title: pageTitle,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
   },
 };
 

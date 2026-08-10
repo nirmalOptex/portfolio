@@ -2,42 +2,39 @@
 
 import { Code, Palette, Smartphone, Database, Server, Sparkles, Check, type LucideIcon } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { SectionHeading } from "@/components/section-heading";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { services as localServices } from "@/lib/data";
-import { Service } from "@/types";
+import { services } from "@/lib/data";
+import { servicesContent } from "@/lib/site";
 
-export function ServicesSection({ content, services }: { content?: any; services?: Service[] }) {
-  const activeServices = services || localServices;
-  const title = content?.title || "Core Services";
-  const body = content?.body || "I craft high-performance digital experiences tailored to your business needs, focusing on user interaction, scalability, and modern clean design.";
+const iconMap: Record<string, LucideIcon> = {
+  code: Code,
+  palette: Palette,
+  smartphone: Smartphone,
+  database: Database,
+  server: Server,
+  sparkles: Sparkles,
+};
 
-  const iconMap: Record<string, LucideIcon> = {
-    code: Code,
-    palette: Palette,
-    smartphone: Smartphone,
-    database: Database,
-    server: Server,
-    sparkles: Sparkles,
-  };
-
+export function ServicesSection() {
   return (
-    <section id="services" className="py-24 relative overflow-hidden bg-background">
+    <section
+      id="services"
+      aria-labelledby="services-heading"
+      className="py-24 relative overflow-hidden bg-background"
+    >
       {/* Background gradients */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-accent/5 to-primary/5 rounded-full blur-[100px] pointer-events-none select-none" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <ScrollReveal className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-3xl md:text-4xl tracking-tight mb-4 text-foreground">
-            {title}
-          </h2>
-          <div className="w-12 h-1 bg-primary mx-auto rounded-full mb-6" />
-          <p className="text-muted-foreground text-md leading-relaxed">
-            {body}
-          </p>
-        </ScrollReveal>
+        <SectionHeading
+          id="services-heading"
+          title={servicesContent.title}
+          body={servicesContent.body}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activeServices.map((service, idx) => {
+          {services.map((service, idx) => {
             const IconComponent = iconMap[service.icon] || Code;
             return (
               <ScrollReveal
@@ -67,18 +64,18 @@ export function ServicesSection({ content, services }: { content?: any; services
                   </div>
 
                   {/* Bullet features */}
-                  <div className="relative z-10 mt-6 pt-6 border-t border-border/60 space-y-2.5">
-                    {service.features.map((feature, featureIdx) => (
-                      <div key={featureIdx} className="flex items-start gap-2.5">
+                  <ul className="relative z-10 mt-6 pt-6 border-t border-border/60 space-y-2.5">
+                    {service.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2.5">
                         <span className="w-4.5 h-4.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 mt-0.5 shrink-0">
                           <Check className="h-3 w-3" />
                         </span>
                         <span className="text-xs font-medium text-muted-foreground">
                           {feature}
                         </span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </Card>
               </ScrollReveal>
             );

@@ -1,186 +1,271 @@
-import { Project, Testimonial, Service, Skill, NavLink, SocialLink } from "../types";
+import {
+  Project,
+  Service,
+  Skill,
+  Experience,
+  Education,
+  Award,
+} from "@/types";
 
-export const navLinks: NavLink[] = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Contact", href: "#contact" }
-];
-
-export const socialLinks: SocialLink[] = [
-  { label: "GitHub", href: "https://github.com", icon: "github" },
-  { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
-  { label: "Twitter", href: "https://twitter.com", icon: "twitter" },
-  { label: "Dribbble", href: "https://dribbble.com", icon: "dribbble" }
-];
+/**
+ * Static content collections. Site-wide copy and identity live in `lib/site.ts`.
+ *
+ * Everything here traces back to `nirmalcv.md` — job titles, dates, project
+ * stacks, grades. Keep the two in step; if the CV does not say it, it does not
+ * belong here.
+ */
 
 export const services: Service[] = [
-  {
-    id: "web-dev",
-    icon: "code",
-    title: "Web Development",
-    description: "Building responsive websites and dashboards with React, Next.js, Laravel, and clean frontend architectures.",
-    features: ["Responsive application UI", "Reusable component-driven code", "Fast page interactions"]
-  },
   {
     id: "backend",
     icon: "database",
     title: "Backend Development",
-    description: "Designing server logic, APIs, and database workflows to keep applications stable and easy to extend.",
-    features: ["RESTful APIs & data modeling", "Firebase / PHP / Laravel", "Authentication and secure routing"]
+    description:
+      "Building and maintaining APIs, server-side logic, and the database layer underneath — the work I do day to day at Ek Ra Sunya.",
+    features: [
+      "RESTful API design and integration",
+      "Authentication and session handling",
+      "Debugging, optimisation, deployment",
+    ],
+  },
+  {
+    id: "web-dev",
+    icon: "code",
+    title: "Frontend Development",
+    description:
+      "Turning designs into responsive interfaces with React and Vite, from marketing pages to the CRM and HRMS dashboards I built at DigiSchool Global.",
+    features: [
+      "Component-driven React interfaces",
+      "Responsive layouts across breakpoints",
+      "Coordination with backend and design",
+    ],
+  },
+  {
+    id: "fullstack",
+    icon: "server",
+    title: "Full-Stack Applications",
+    description:
+      "Taking a project end to end — schema, server, and interface — in the stacks I have shipped with: Laravel, PHP, MySQL, Supabase, and Firebase.",
+    features: [
+      "Laravel and PHP applications",
+      "MySQL, MongoDB, and Supabase",
+      "Roles, permissions, and admin tooling",
+    ],
   },
   {
     id: "realtime",
     icon: "smartphone",
-    title: "Real-Time Systems",
-    description: "Creating live alert flows, tracking features, and instant notifications that feel reliable in critical moments.",
-    features: ["Live tracking and alerts", "Firebase realtime flows", "Mobile-ready interactions"]
+    title: "Real-Time & Mobile",
+    description:
+      "Live tracking and alert flows that have to work when they matter. Medusafe pairs React Native with Firebase for exactly this.",
+    features: [
+      "GPS tracking and SOS flows",
+      "Firebase realtime data",
+      "React Native mobile builds",
+    ],
   },
   {
-    id: "ui-ux",
-    icon: "palette",
-    title: "UX-Driven Interfaces",
-    description: "Turning complex workflows into clear dashboards and controls for people who need to get work done quickly.",
-    features: ["User-first page structures", "Practical dashboard layouts", "Accessible and simple interactions"]
+    id: "data",
+    icon: "sparkles",
+    title: "Data Analysis",
+    description:
+      "Exploratory analysis, statistical modelling, and visualisation — the specialisation of my BCS and the part I reach for when a decision needs evidence.",
+    features: [
+      "Exploratory data analysis",
+      "Statistical modelling",
+      "Charts and visual reporting",
+    ],
   },
   {
     id: "ml",
-    icon: "sparkles",
-    title: "Data & Automation",
-    description: "Applying practical Python and machine learning basics to support smarter actions and better predictions.",
-    features: ["ML-powered decision support", "Python automation", "Predictive alerting & clustering"]
+    icon: "palette",
+    title: "Applied Machine Learning",
+    description:
+      "Practical Python models put to work inside a product, like the risk-area clustering that decides which zones Medusafe treats as high risk.",
+    features: [
+      "Clustering and risk scoring",
+      "Python model backends",
+      "Models wired into a live product",
+    ],
   },
-  {
-    id: "strategy",
-    icon: "server",
-    title: "Project Delivery",
-    description: "Keeping projects grounded in real needs with practical planning, clear scope, and maintainable code.",
-    features: ["Real-world project experience", "Problem-focused delivery", "Documentation and testing"]
-  }
 ];
 
 export const projects: Project[] = [
   {
-    id: "taskpilot",
-    title: "TaskPilot",
-    description: "A smart todo and planning app with authentication, task priorities, and helpful microservices for daily planning.",
-    image: "/images/project-saas.png",
-    techStack: ["React", "Firebase", "Tailwind CSS", "Node.js"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-    category: "Web App"
-  },
-  {
     id: "medusafe",
     title: "Medusafe",
-    description: "A discreet emergency alert system with real-time tracking, SOS support, and risk-area clusters for safer movement in high-risk zones.",
+    description:
+      "A discreet emergency alert system for people moving through high-risk areas. GPS tracking and an SOS trigger sit on top of machine-learning risk-area clustering, with a React Native app for the field and a Python service behind the admin dashboard. Winner of the Best Capstone Project Award 2025.",
     image: "/images/project-mobile.png",
     techStack: ["React Native", "Firebase", "Python", "Machine Learning"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-    category: "Mobile App"
+    liveUrl: "",
+    githubUrl: "",
+    category: "Mobile App",
   },
   {
     id: "sarara",
     title: "Sarara",
-    description: "A modern social cycling platform for small businesses with product listings, order processing, user roles, and inventory controls.",
+    description:
+      "A community platform built on Laravel with Filament and Alpine.js, covering listings, order processing, roles and permissions, and inventory control behind a reactive admin UI. Recognised with the Best Critical Thinking Project award in 2025.",
     image: "/images/project-analytics.png",
     techStack: ["Laravel", "Filament", "Alpine.js", "PHP"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-    category: "Dashboard"
+    liveUrl: "",
+    githubUrl: "",
+    category: "Web App",
+  },
+  {
+    id: "taskpilot",
+    title: "TaskPilot",
+    description:
+      "A productivity app for managing daily tasks and longer-term goals, with a modern interface, seamless authentication, and microservices that help with planning, prioritisation, and tracking.",
+    image: "/images/project-saas.png",
+    techStack: ["React", "Authentication", "Microservices"],
+    liveUrl: "",
+    githubUrl: "",
+    category: "Web App",
   },
   {
     id: "mindwell",
     title: "MindWell",
-    description: "A supportive mental health site where users can share stories, find resources, and interact anonymously in a safe community.",
+    description:
+      "A mental health support platform in PHP and MySQL where people share experiences anonymously, find resources, and read community blog posts — with moderation tools so the space stays safe.",
     image: "/images/project-ecommerce.png",
-    techStack: ["PHP", "MySQL", "JavaScript", "HTML/CSS"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-    category: "Web App"
+    techStack: ["PHP", "MySQL", "JavaScript"],
+    liveUrl: "",
+    githubUrl: "",
+    category: "Web App",
   },
   {
     id: "portfolio",
     title: "Personal Portfolio",
-    description: "A responsive portfolio site showcasing resume details, projects, and contact information with a clean, modern design.",
+    description:
+      "A responsive portfolio bringing together my résumé and project work, built with React and Vite and deployed on GitHub Pages.",
     image: "/images/w.jpg",
     techStack: ["React", "Vite", "Tailwind CSS"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-    category: "Design"
+    liveUrl: "",
+    githubUrl: "",
+    category: "Design",
   },
-  {
-    id: "campus-connect",
-    title: "Campus Connect",
-    description: "A collaboration hub designed for student groups and project teams, with announcements, shared resources, and event updates.",
-    image: "/images/project-ai.png",
-    techStack: ["React", "TypeScript", "Firebase", "Tailwind CSS"],
-    liveUrl: "https://example.com",
-    githubUrl: "https://github.com",
-    category: "Web App"
-  }
 ];
 
-export const testimonials: Testimonial[] = [
+/** Newest first — the About section renders this order as a timeline. */
+export const experience: Experience[] = [
   {
-    id: "test-1",
-    name: "Project Lead",
-    position: "Product Manager",
-    company: "TaskPilot",
-    review: "Nirmal helped turn our task management idea into a polished product with reliable flows and a clean interface.",
-    rating: 5,
-    avatar: "PL"
+    id: "ek-ra-sunya",
+    company: "Ek Ra Sunya",
+    location: "Kathmandu, Nepal",
+    roles: [
+      { title: "Backend Developer", period: "June 2026 – Present", current: true },
+      { title: "Backend Intern", period: "February 2026 – May 2026" },
+    ],
+    highlights: [
+      "Develop and maintain backend APIs and server-side functionality.",
+      "Work across databases, authentication systems, and RESTful API integrations.",
+      "Collaborate with frontend developers on application performance and scalability.",
+      "Take part in debugging, optimisation, and deployment workflows.",
+    ],
   },
   {
-    id: "test-2",
-    name: "David Chen",
-    position: "Founder & CEO",
-    company: "SaaSify",
-    review: "Working with them was the best product development decision we've made. The AI tool's streaming response UI and custom components feel extremely premium. A masterclass in front-end design.",
-    rating: 5,
-    avatar: "DC"
+    id: "digischool-global",
+    company: "DigiSchool Global",
+    location: "Kathmandu, Nepal",
+    roles: [
+      { title: "Project Support Trainee", period: "November 2025 – January 2026" },
+      { title: "Project Support Intern", period: "July 2025 – September 2025" },
+    ],
+    highlights: [
+      "Built in-house CRM and HRMS web applications as a frontend developer.",
+      "Coordinated with the backend and design teams to ship usable interfaces.",
+      "Supported academic operations, curriculum management, and learning platform activity.",
+      "Helped with testing, debugging, and system usability and performance.",
+    ],
   },
   {
-    id: "test-3",
-    name: "Team Lead",
-    position: "Operations Manager",
-    company: "MindWell",
-    review: "The platform is easy to use and kept our community focused on meaningful support. Nirmal made the site feel calm and dependable.",
-    rating: 5,
-    avatar: "TM"
+    id: "cloudfactory",
+    company: "CloudFactory",
+    location: "Kathmandu, Nepal",
+    roles: [{ title: "Data Entry Clerk", period: "March 2023 – May 2023" }],
+    highlights: [
+      "Assessed, entered, and maintained large volumes of data with close attention to accuracy.",
+      "Kept data consistent and intact by following standard entry procedures and quality requirements.",
+    ],
   },
-  {
-    id: "test-4",
-    name: "Client",
-    position: "Business Owner",
-    company: "Sarara",
-    review: "The dashboard is practical, fast, and easy for our team to manage. It solved exactly the problems we needed for inventory and order tracking.",
-    rating: 5,
-    avatar: "CO"
-  }
 ];
 
+export const education: Education[] = [
+  {
+    id: "taylors",
+    institution: "Taylor's University, Malaysia",
+    qualification: "BSc (Hons) Computer Science — Data Science specialisation",
+    detail: "Studied at IIMS College, Kathmandu (partner institution)",
+    period: "2022 – 2026",
+    score: "CGPA 3.65",
+  },
+  {
+    id: "uniglobe",
+    institution: "Uniglobe College, Kathmandu",
+    qualification: "Higher Secondary Education (Science)",
+    period: "Completed 2022",
+    score: "GPA 3.57",
+  },
+  {
+    id: "whitefield",
+    institution: "Whitefield School, Kathmandu",
+    qualification: "Secondary Education (Science)",
+    period: "Completed 2020",
+    score: "GPA 3.35",
+  },
+];
+
+export const awards: Award[] = [
+  {
+    id: "deans-list",
+    title: "Dean's List Commendation",
+    issuer: "Taylor's University · Multiple semesters",
+    description:
+      "Recognised for sustained academic performance across several semesters of the programme.",
+  },
+  {
+    id: "best-capstone",
+    title: "Best Capstone Project Award",
+    issuer: "2025 · Medusafe",
+    description:
+      "Awarded for Medusafe, a discreet emergency alert and risk-assessment app combining GPS tracking with machine learning for real-time threat detection.",
+  },
+  {
+    id: "best-critical-thinking",
+    title: "Best Critical Thinking Project",
+    issuer: "2025 · Sarara",
+    description:
+      "Honoured for problem-solving and innovation in building Sarara, a Laravel community platform using Filament and Alpine.js.",
+  },
+];
+
+/** Skill categories render in this order in the About section. */
 export const skills: Skill[] = [
-  // Frontend
-  { name: "React / Next.js", level: 95, category: "Frontend" },
-  { name: "TypeScript", level: 90, category: "Frontend" },
-  { name: "Tailwind CSS", level: 95, category: "Frontend" },
-  { name: "Framer Motion / Animations", level: 88, category: "Frontend" },
-  
-  // Backend
-  { name: "Node.js / Express", level: 85, category: "Backend" },
-  { name: "GraphQL & REST APIs", level: 90, category: "Backend" },
-  { name: "PostgreSQL & Prisma", level: 82, category: "Backend" },
-  { name: "MongoDB & Redis", level: 80, category: "Backend" },
+  { name: "React", category: "Frontend" },
+  { name: "Vite", category: "Frontend" },
+  { name: "Tailwind CSS", category: "Frontend" },
+  { name: "Alpine.js", category: "Frontend" },
+  { name: "React Native", category: "Frontend" },
 
-  // UI/UX & Design
-  { name: "UI/UX & Figma", level: 85, category: "Design" },
-  { name: "Interactions & Micro-animations", level: 90, category: "Design" },
+  { name: "Laravel", category: "Backend" },
+  { name: "PHP", category: "Backend" },
+  { name: "REST APIs", category: "Backend" },
+  { name: "Authentication", category: "Backend" },
+  { name: "Filament", category: "Backend" },
 
-  // DevOps & Others
-  { name: "Vercel / AWS / GCP", level: 80, category: "DevOps" },
-  { name: "Docker & CI/CD Pipelines", level: 75, category: "DevOps" }
+  { name: "MySQL", category: "Data & ML" },
+  { name: "MongoDB", category: "Data & ML" },
+  { name: "Supabase", category: "Data & ML" },
+  { name: "Firebase", category: "Data & ML" },
+  { name: "Python", category: "Data & ML" },
+  { name: "Exploratory Data Analysis", category: "Data & ML" },
+  { name: "Statistical Modelling", category: "Data & ML" },
+  { name: "Data Visualisation", category: "Data & ML" },
+
+  { name: "Problem-solving & analytical thinking", category: "Ways of Working" },
+  { name: "Communication & teamwork", category: "Ways of Working" },
+  { name: "Adaptability & continuous learning", category: "Ways of Working" },
+  { name: "Time management & project planning", category: "Ways of Working" },
 ];
