@@ -43,15 +43,14 @@ export const socialLinks: SocialLink[] = [
   { label: "GitHub", href: "https://github.com/nirmaloptex", icon: "github" },
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/in/nirmalmaharjan",
+    href: "https://www.linkedin.com/in/nirmal-maharjan-a15018233/",
     icon: "linkedin",
   },
 ];
 
 export const heroContent = {
   eyebrow: "Backend Developer at Ek Ra Sunya",
-  title:
-    "I build the backend\nthat keeps web products\nrunning.",
+  title: "I build the backend\nthat keeps web products\nrunning.",
   rotatingWords: [
     "Backend Developer",
     "Full-Stack Web Developer",
